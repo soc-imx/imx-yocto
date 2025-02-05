@@ -1,0 +1,11 @@
+cp rpi-kas.yml kas-raspberrypi5.yaml
+cp rpi-kas.yml kas-raspberrypi-armv8.yaml
+cp rpi-kas.yml kas-raspberrypi-cm.yaml
+cp rpi-kas.yml kas-raspberrypi0-2w-64.yaml
+cp rpi-kas.yml kas-raspberrypi0.yaml
+cp rpi-kas.yml kas-raspberrypi2.yaml
+cp rpi-kas.yml kas-raspberrypi3.yaml
+cp rpi-kas.yml kas-raspberrypi4.yaml
+cp rpi-kas.yml kas-raspberrypi-armv7.yaml
+cp rpi-kas.yml kas-raspberrypi-cm3.yaml
+cp rpi-kas.yml kas-raspberrypi.yaml
