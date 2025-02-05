@@ -1,8 +1,0 @@
-include:
-- path: "base/poky.yml"
-- path: "base/raspberrypi.yml"
-- path: "meta/openembedded.yml"
-- path: "meta/virtualization.yml"
-- path: "features/qt5.yml"
-- path: "features/golang.yml"
-- path: "features/security.yml"

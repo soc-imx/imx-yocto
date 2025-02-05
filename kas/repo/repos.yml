@@ -1,0 +1,42 @@
+# Base System Layers
+include:
+# Core Yocto
+- path: "base/poky.yml"
+  priority: 1
+
+# Hardware Support
+- path: "base/raspberrypi.yml"
+  priority: 2
+
+# Meta Layers  
+- path: "meta/openembedded.yml"
+  priority: 3
+- path: "meta/virtualization.yml"
+  priority: 4
+
+# Feature Layers
+- path: "features/qt5.yml"
+  priority: 5
+- path: "features/golang.yml"
+  priority: 6
+- path: "features/security.yml"
+  priority: 7
+
+# Layer configuration
+defaults:
+  repos:
+    refspec: master
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+        # Layer dependencies
+dependencies:
+  meta-raspberrypi:
+  - poky
+  meta-openembedded:
+  - poky
+  meta-virtualization:
+  - poky
+  - meta-openembedded

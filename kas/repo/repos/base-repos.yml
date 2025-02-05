@@ -2,6 +2,7 @@ repos:
   poky:
     url: "https://git.yoctoproject.org/poky"
     branch: "master"
+    path: "layers/poky"
     layers:
     - meta
     - meta-poky
@@ -10,5 +11,6 @@ repos:
   meta-raspberrypi:
     url: "https://github.com/agherzan/meta-raspberrypi.git"
     branch: "master"
+    path: "layers/meta-raspberrypi"
     required: true
     priority: 10
