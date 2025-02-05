@@ -1,0 +1,3 @@
+usage: kas [-h] [--version] [-l {debug,info,warning,error,critical}]
+           {build,checkout,dump,for-all-repos,lock,shell,menu} ...
+kas: error: unrecognized arguments: --parallel-jobs=32

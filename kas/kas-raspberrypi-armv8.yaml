@@ -4,7 +4,7 @@ header:
 machine: raspberrypi-armv8
 distro: poky
 target:
-- rpi-test-image
+- core-image-minimal
 
 repos:
   meta-raspberry:
@@ -39,8 +39,7 @@ repos:
     branch: master
 
 local_conf_header:
-  reduce_diskspace: |
-    INHERIT += "rm_work_and_downloads"
+
   standard: |
     CONF_VERSION = "2"
     PACKAGE_CLASSES = "package_rpm"
