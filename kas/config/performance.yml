@@ -1,0 +1,4 @@
+env:
+  BB_NUMBER_THREADS: "8"
+  PARALLEL_MAKE: "-j 8"
+  BB_NICE_LEVEL: "10"

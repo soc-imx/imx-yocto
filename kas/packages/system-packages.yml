@@ -1,0 +1,16 @@
+system_packages:
+  base: |
+    CORE_IMAGE_EXTRA_INSTALL += " \
+        kernel-modules \
+        linux-firmware-rpidistro \
+        u-boot \
+        openssh-sftp-server \
+        ca-certificates \
+        tzdata \
+        bash-completion \
+        usbutils \
+        i2c-tools \
+        can-utils \
+        ethtool \
+        pciutils \
+    "

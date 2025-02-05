@@ -1,0 +1,17 @@
+tools_packages:
+  utilities: |
+    CORE_IMAGE_EXTRA_INSTALL += " \
+        vim \
+        nano \
+        htop \
+        iotop \
+        iftop \
+        tmux \
+        screen \
+        rsync \
+        curl \
+        wget \
+        tcpdump \
+        iperf3 \
+        stress-ng \
+    "

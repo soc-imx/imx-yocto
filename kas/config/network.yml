@@ -1,0 +1,11 @@
+env:
+  MACHINE_FEATURES += "bluetooth wifi"
+  WIFI_SUPPORT: "1"
+  ENABLE_UART: "1"
+  CORE_IMAGE_EXTRA_INSTALL += "\
+    dhcp-client \
+    wpa-supplicant \
+    wireless-tools \
+    networkmanager \
+    bluez5 \
+    "

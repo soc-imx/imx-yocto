@@ -1,0 +1,11 @@
+development_packages:
+  tools: |
+    CORE_IMAGE_EXTRA_INSTALL += " \
+        gcc \
+        g++ \
+        make \
+        cmake \
+        git \
+        python3 \
+        python3-pip \
+    "

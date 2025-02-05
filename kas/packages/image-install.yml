@@ -1,0 +1,10 @@
+image_install:
+  include:
+  - path: "base/system.yml"
+  - path: "base/network.yml"
+  - path: "development/compiler.yml"
+  - path: "development/languages.yml"
+  - path: "tools/system.yml"
+  - path: "tools/network.yml"
+  - path: "debug/profiling.yml"
+  - path: "debug/analysis.yml"

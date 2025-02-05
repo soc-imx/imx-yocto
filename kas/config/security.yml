@@ -1,0 +1,11 @@
+env:
+  SECURITY_CFLAGS_pn-openssh: "${SECURITY_NOPIE_CFLAGS}"
+  SECURITY_STACK_PROTECTOR: "strong"
+  SECURITY_PIE: "1"
+  SECURITY_FORTIFY: "2"
+  SELINUX_DEFAULT: "enforcing"
+  INIT_MANAGER: "systemd"
+  VIRTUAL_RUNTIME_init_manager: "systemd"
+  SYSTEMD_DEFAULT_TARGET: "multi-user.target"
+  DISTRO_FEATURES += "systemd security pam selinux apparmor"
+  IMAGE_FEATURES += "ssh-server-openssh"

@@ -1,0 +1,39 @@
+machines:
+  raspberrypi4-64:
+    machine: "raspberrypi4-64"
+    local_conf: |
+      ENABLE_DWC2_HOST = "1"
+      ENABLE_DWC2_PERIPHERAL = "1"
+      UBOOT_MACHINE = "rpi_4_defconfig"
+      RPI_USE_U_BOOT = "1"
+
+  raspberrypi3:
+    machine: "raspberrypi3"
+    local_conf: |
+      ENABLE_DWC2_HOST = "1"
+      UBOOT_MACHINE = "rpi_3_32b_defconfig"
+
+  raspberrypi3-64:
+    machine: "raspberrypi3-64"
+    local_conf: |
+      ENABLE_DWC2_HOST = "1"
+      UBOOT_MACHINE = "rpi_3_defconfig"
+
+  raspberrypi0:
+    machine: "raspberrypi0"
+    local_conf: |
+      ENABLE_DWC2_PERIPHERAL = "1"
+      UBOOT_MACHINE = "rpi_0_w_defconfig"
+
+  raspberrypi0-wifi:
+    machine: "raspberrypi0-wifi"
+    local_conf: |
+      ENABLE_DWC2_PERIPHERAL = "1"
+      UBOOT_MACHINE = "rpi_0_w_defconfig"
+
+  raspberrypi400:
+    machine: "raspberrypi400-64"
+    local_conf: |
+      ENABLE_DWC2_HOST = "1"
+      UBOOT_MACHINE = "rpi_4_defconfig"
+      RPI_USE_U_BOOT = "1"

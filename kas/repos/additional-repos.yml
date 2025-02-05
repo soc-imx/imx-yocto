@@ -1,0 +1,12 @@
+repos:
+  meta-virtualization:
+    url: "https://git.yoctoproject.org/meta-virtualization"
+    branch: "master"
+
+  meta-qt5:
+    url: "https://github.com/meta-qt5/meta-qt5.git"
+    branch: "master"
+
+  meta-golang:
+    url: "https://github.com/meta-golang/meta-golang.git"
+    branch: "master"

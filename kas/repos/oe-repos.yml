@@ -1,0 +1,10 @@
+repos:
+  meta-openembedded:
+    url: "https://github.com/openembedded/meta-openembedded.git"
+    branch: "master"
+    layers:
+    - meta-oe
+    - meta-python
+    - meta-networking
+    - meta-multimedia
+    - meta-filesystems
