@@ -1,7 +1,7 @@
 header:
   version: 8
 
-machine: raspberrypi4
+machine: raspberrypi4-64
 distro: poky
 target: core-image-base
 
@@ -32,11 +32,22 @@ repos:
       meta-perl:
 
 
+  meta-security:
+    url: https://git.yoctoproject.org/meta-security
+    path: layers/meta-security
+    branch: master
+
+  meta-virtualization:
+    url: https://git.yoctoproject.org/meta-virtualization
+    path: layers/meta-virtualization
+    branch: master
+
 bblayers_conf_header:
   standard: |
     POKY_BBLAYERS_CONF_VERSION = "2"
     BBPATH = "${TOPDIR}"
     BBFILES ?= ""
+
 local_conf_header:
   reduce_diskspace: |
     INHERIT += "rm_work_and_downloads"
@@ -66,3 +77,115 @@ local_conf_header:
     # Uncomment next line to allow the license
     # See: linux-firmware-rpidistro in docs/ipcompliance.md
     #LICENSE_FLAGS_ACCEPTED = "synaptics-killswitch"
+  performance: |
+    BB_NUMBER_THREADS = "8"
+    PARALLEL_MAKE = "-j 8"
+
+  security: |
+    INHERIT += "security_flags"
+    SECURITY_CFLAGS_pn-openssh = "${SECURITY_NO_PIE_CFLAGS}"
+
+  network: |
+    EXTRA_IMAGE_FEATURES += "ssh-server-openssh"
+    DISTRO_FEATURES_append = " wifi bluetooth"
+
+  storage: |
+    CORE_IMAGE_EXTRA_INSTALL += " e2fsprogs-resize2fs"
+    IMAGE_ROOTFS_EXTRA_SPACE = "1048576"
+
+  extended_features: |
+    EXTRA_IMAGE_FEATURES += " \
+        debug-tweaks \
+        dev-pkgs \
+        tools-debug \
+        tools-sdk \
+        tools-profile \
+        package-management \
+        splash \
+        nfs-server \
+        ssh-server-openssh \
+        x11-base \
+        hwcodecs \
+    "
+
+  packages: |
+    CORE_IMAGE_EXTRA_INSTALL += " \
+        htop \
+        iotop \
+        iperf3 \
+        nano \
+        vim \
+        git \
+        cmake \
+        python3 \
+        python3-pip \
+        nodejs \
+        docker \
+        kubernetes \
+        ffmpeg \
+        v4l-utils \
+        gstreamer1.0 \
+        opencv \
+        mesa \
+        vulkan-tools \
+        packagegroup-core-buildessential \
+    "
+
+  multimedia: |
+    LICENSE_FLAGS_ACCEPTED += "commercial"
+    DISTRO_FEATURES_append = " opengl vulkan"
+    MACHINE_FEATURES_append = " vc4graphics"
+
+  virtualization: |
+    DISTRO_FEATURES_append = " virtualization"
+    MACHINE_FEATURES_append = " pci vfat"
+
+  development: |
+    EXTRA_IMAGE_FEATURES += "dbg-pkgs"
+    INHERIT += "buildhistory"
+    BUILDHISTORY_COMMIT = "1"
+    INHERIT += "archiver"
+    COPYLEFT_LICENSE_INCLUDE = "*"
+
+  security_hardening: |
+    SECURITY_CFLAGS_append = " -fstack-protector-strong"
+    SECURITY_STRINGFORMAT = "1"
+    SECURITY_PIE_CFLAGS = "-fPIE -pie"
+    SECURITY_STACK_PROTECTOR = "strong"
+    SECURITY_FORTIFY_HEADERS = "1"
+
+  network_config: |
+    DISTRO_FEATURES_append = " wifi bluetooth systemd pam"
+    VIRTUAL-RUNTIME_init_manager = "systemd"
+    DISTRO_FEATURES_BACKFILL_CONSIDERED = "sysvinit"
+    VIRTUAL-RUNTIME_initscripts = ""
+
+  storage_config: |
+    CORE_IMAGE_EXTRA_INSTALL += " \
+        e2fsprogs-resize2fs \
+        parted \
+        dosfstools \
+        mtools \
+        hdparm \
+    "
+    IMAGE_ROOTFS_EXTRA_SPACE = "2097152"
+    IMAGE_FSTYPES += "tar.bz2 ext4 rpi-sdimg"
+
+  debug_logging: |
+    EXTRA_IMAGE_FEATURES += " syslog-ng"
+    CORE_IMAGE_EXTRA_INSTALL += " rsyslog logrotate"
+
+  containerization: |
+    EXTRA_IMAGE_FEATURES += " container-management"
+    CORE_IMAGE_EXTRA_INSTALL += " podman docker-compose"
+
+  qa_testing: |
+    EXTRA_IMAGE_FEATURES += " test-image benchmarking"
+    CORE_IMAGE_EXTRA_INSTALL += " stress-ng sysbench"
+
+  machine_extra: |
+    MACHINE_FEATURES_append = " hardware-acceleration firmware-update"
+    CORE_IMAGE_EXTRA_INSTALL += " linux-firmware"
+
+  compiler_optimizations: |
+    EXTRA_OECONF += " --enable-optimizations --with-lto"

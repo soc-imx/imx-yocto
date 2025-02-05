@@ -1,6 +1,0 @@
-machines:
-  raspberrypi0-wifi:
-    machine: "raspberrypi0-wifi"
-    local_conf: |
-      ENABLE_DWC2_PERIPHERAL = "1"
-      UBOOT_MACHINE = "rpi_0_w_defconfig"

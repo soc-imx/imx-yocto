@@ -1,4 +1,0 @@
-env:
-  IMAGE_FEATURES: += "debug-tweaks package-management tools-sdk"
-  EXTRA_IMAGE_FEATURES: += "\ tools-debug \ tools-profile \ tools-testapps \ package-management \ dev-pkgs \ dbg-pkgs \ src-pkgs \ ptest-pkgs \ "
-  PACKAGECONFIG:append:pn-qemu-system-native: " sdl"

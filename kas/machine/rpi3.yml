@@ -1,6 +1,0 @@
-machines:
-  raspberrypi3:
-    machine: "raspberrypi3"
-    local_conf: |
-      ENABLE_DWC2_HOST = "1"
-      UBOOT_MACHINE = "rpi_3_32b_defconfig"

@@ -1,8 +1,0 @@
-machines:
-  raspberrypi4-64:
-    machine: "raspberrypi4-64"
-    local_conf: |
-      ENABLE_DWC2_HOST = "1"
-      ENABLE_DWC2_PERIPHERAL = "1"
-      UBOOT_MACHINE = "rpi_4_defconfig"
-      RPI_USE_U_BOOT = "1"

@@ -1,9 +1,0 @@
-repos:
-  meta-security:
-    url: "https://git.yoctoproject.org/meta-security"
-    branch: "master"
-    path: "layers/meta-security"
-    layers:
-    - meta-tpm
-    - meta-security-compliance
-    - meta-security-hardening
