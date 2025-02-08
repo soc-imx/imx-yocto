@@ -50,16 +50,17 @@ endef
 
 # Add after board variants definition
 # Generate SDK targets dynamically with logging
+
 define generate_sdk_targets
 sdk-$(1): check-deps
 	@echo "Generating SDK for $(1) at $$(date)"
 	@mkdir -p $(LOG_DIR)/$(1) $(SDK_DIR)/$(1)
-	$(KAS) build $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) -c 'bitbake -c populate_sdk core-image-minimal' 2>&1 | tee $(LOG_DIR)/$(1)/sdk-$(BUILD_TIME).log
+	$(KAS) build $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) -c populate_sdk  2>&1 | tee $(LOG_DIR)/$(1)/sdk-$(BUILD_TIME).log
 	@echo "SDK generation completed for $(1) at $$(date)"
 
 sdk-shell-$(1): check-deps
 	@echo "Opening SDK shell for $(1)"
-	$(KAS) shell $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) -c 'bitbake -c populate_sdk core-image-minimal'
+	$(KAS) shell $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) -c populate_sdk 
 endef
 
 
