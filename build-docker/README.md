@@ -1,102 +1,147 @@
-# Raspberry Pi KAS Docker Build System
+# 🚀 Yocto Docker Builder - Raspberry Pi KAS
 
-A streamlined Docker-based build system for Kubernetes at Scale (KAS) on Raspberry Pi.
+Welcome to the **Yocto Docker Builder**, a containerized environment specifically optimized for building Raspberry Pi images using KAS and Yocto. This project provides a **reliable, reproducible, and isolated** build environment. 🎯
 
-## 📋 Features
+## 🎯 Key Features
 
-- Automated Docker build environment
-- Cross-platform compatibility
-- Pre-configured Raspberry Pi toolchain
-- Optimized for KAS (Kubernetes at Scale)
+- **Containerized KAS build environment** 🐳
+- **Raspberry Pi-specific configurations**
+- **KAS yaml-based build management**
+- **Optimized for Yocto Kirkstone**
+- **Automated dependency management**
+- **Multi-core build optimization**
+- **Smart caching system**
 
-## 🚀 Quick Start
+## 📋 Requirements
 
-### Prerequisites
+- Docker Engine 20.10+
+- Docker Compose v2.0+
+- 100GB+ free disk space
+- 16GB+ RAM recommended
+- Unix-based OS (Linux/macOS)
 
-- Docker installed
-- Git
-- 20GB free disk space
-- Internet connection
+## 🚀 Getting Started
 
-### Installation
+### 1. Initial Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/raspberry-pi-kas.git
-
-# Navigate to build directory
+git clone git@github.com:soc-pi/raspberry-pi-kas.git
 cd raspberry-pi-kas/build-docker
 
-# Build the Docker image
-docker build -t kas-builder .
+# Build the environment
+make build
 ```
 
-## 🔧 Usage
-
-### Basic Build
+### 2. Build Management
 
 ```bash
-docker run -it --rm \
-  -v $(pwd):/workspace \
-  kas-builder build kas-project.yml
+# Start the build container
+make run
+
+# Access the container
+make exec
+
+# Build using KAS
+kas build kas-project.yml
 ```
 
-### Development Mode
+## 🔧 Build Configuration
 
-```bash
-docker run -it --rm \
-  -v $(pwd):/workspace \
-  --name kas-dev \
-  kas-builder bash
+### KAS Configuration File
+
+```yaml
+header:
+  version: 8
+machine: raspberrypi4-64
+distro: poky
+target: core-image-minimal
 ```
 
-## 📦 Build Configuration
+## 📊 Project Structure
 
-The system supports various build configurations:
+```
+raspberry-pi-kas/
+├── build-docker/          # Docker build environment
+│   ├── Dockerfile        # Container definition
+│   ├── docker-compose.yml
+│   └── Makefile         # Build automation
+├── kas/                  # KAS configuration files
+│   └── kas-project.yml  # Main build config
+└── layers/              # Custom Yocto layers
+```
 
-- Debug builds (`-v DEBUG=1`)
-- Release builds (default)
-- Custom configurations via environment variables
+## 🛠️ Makefile Commands
 
-## 🛠 Customization
+| Command      | Description                  |
+| ------------ | ---------------------------- |
+| `make build` | Build the Docker environment |
+| `make run`   | Start the container          |
+| `make exec`  | Access the container shell   |
+| `make clean` | Clean build artifacts        |
+| `make logs`  | View build logs              |
 
-Modify `Dockerfile` or `kas-project.yml` for:
+## 🔄 Build Process
 
-- Custom package selection
-- Build optimizations
-- Target architecture settings
+1. **Environment Setup**
 
-## 🐛 Troubleshooting
+   - Container initialization
+   - KAS configuration validation
+   - Layer synchronization
 
-Common issues and solutions:
+2. **Build Execution**
 
-1. **Build fails with memory error**
+   - Dependency resolution
+   - Source fetching
+   - Package compilation
+   - Image generation
 
-   - Increase Docker memory allocation
-   - Clear Docker cache
+3. **Output Generation**
+   - SD card image creation
+   - Package manifests
+   - Build logs
 
-2. **Network connectivity issues**
-   - Check proxy settings
-   - Verify network permissions
+## 💡 Tips & Tricks
 
-## 📝 Contributing
+- Use `DL_DIR` and `SSTATE_DIR` for faster rebuilds
+- Enable parallel build with `BB_NUMBER_THREADS`
+- Monitor resource usage with `docker stats`
+- Use `ccache` for faster compilation
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+1. **Build Space Issues**
+
+   ```bash
+   make clean
+   docker system prune
+   ```
+
+2. **Memory Problems**
+   - Increase Docker memory limit
+   - Reduce parallel jobs
+
+## 📚 Resources
+
+- [Yocto Project Documentation](https://docs.yoctoproject.org/)
+- [KAS Documentation](https://kas.readthedocs.io/)
+- [Raspberry Pi Documentation](https://www.raspberrypi.org/documentation/)
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch
+2. Create a feature branch
 3. Commit changes
-4. Push to the branch
-5. Create Pull Request
+4. Submit a pull request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - Feel free to use and modify! 🚀
 
-## 👥 Maintainers
+## 📮 Support
 
-- Your Name (@githubhandle)
-
-## 🙏 Acknowledgments
-
-- Raspberry Pi Foundation
-- KAS Project Contributors
-- Docker Community
+- Create an issue for bugs
+- Join our Discord community
+- Check the Wiki for more details
