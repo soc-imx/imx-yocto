@@ -7,3 +7,8 @@ logs/
 sdk/
 docker/
 sdk-docker/sdk.sh
+downloads/
+sstate-cache/
+*.log
+*.tmp
+*.dockerignore

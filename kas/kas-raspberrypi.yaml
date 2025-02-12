@@ -46,6 +46,16 @@ local_conf_header:
     SDKMACHINE = "x86_64"
     USER_CLASSES = "buildstats"
     PATCHRESOLVE = "noop"
+
+    # SDK configurations
+    EXTRA_IMAGE_FEATURES += "tools-sdk dev-pkgs"
+    TOOLCHAIN_HOST_TASK:append = " nativesdk-cmake nativesdk-python3-modules"
+    TOOLCHAIN_TARGET_TASK:append = " kernel-devsrc"
+
+    # Move download and state cache directories outside build
+    DL_DIR = "${TOPDIR}/../downloads"
+    SSTATE_DIR = "${TOPDIR}/../sstate-cache"
+
   debug-tweaks: |
     IMAGE_FEATURES += "empty-root-password allow-empty-password allow-root-login post-install-logging"
   diskmon: |

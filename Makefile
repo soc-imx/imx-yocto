@@ -75,7 +75,7 @@ sdk-shell-$(1): check-deps
 endef
 
 define copy_sdk_targets
-copy-sdk-$(1): check-deps
+copy-sdk-$(1): check-deps sdk-$(1)
 	@echo "Copying SDK for $(1) at $$(date)"
 	@mkdir -p $(LOG_DIR)/$(1)
 	@mkdir -p $(SDK_DIR)/$(1)
@@ -127,7 +127,7 @@ extract-$(1): verify-$(1)
 endef
 
 define generate_docker_targets
-docker-$(1):  sdk-$(1)
+docker-$(1): copy-sdk-$(1) 
 	@echo "Building Docker image for $(1) at $$(date)"
 	@cp $(SDK_DIR)/$(1)/*-toolchain*.sh $(DOCKER_DIR)/sdk.sh
 	@docker build -t $(1)-app-builder $(DOCKER_DIR)
