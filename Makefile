@@ -74,6 +74,37 @@ sdk-shell-$(1): check-deps
 endef
 
 
+
+
+define copy_sdk_targets
+copy-sdk-$(1): check-deps
+	@echo "Copying SDK for $(1) at $$(date)"
+	@mkdir -p $(LOG_DIR)/$(1)
+	@mkdir -p $(SDK_DIR)/$(1)
+	@echo "Copying SDK files for $(1)..."
+	@if ! find -L "$(SDK_DIR)/$(1)" -name "*.tar.xz" -type f -exec cp --preserve=all {} "$(SDK_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
+		echo "Error copying files"; \
+		exit 1; \
+	fi
+	@echo "SDK copy completed for $(1) at $$(date)"
+endef
+
+define copy_images_targets
+copy-images-$(1): check-deps
+	@echo "Copying images for $(1) at $$(date)"
+	@mkdir -p $(LOG_DIR)/$(1)
+	@mkdir -p $(IMAGE_DIR)/$(1)
+	@echo "Copying image files for $(1)..."
+	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.wic.bmap" -type f -exec cp --preserve=all {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
+		echo "Error copying files"; \
+		exit 1; \
+	fi
+	@echo "Image copy completed for $(1) at $$(date)"
+endef
+
+
+
+
 $(foreach board,$(BOARDS),$(eval $(call generate_board_targets,$(board))))
 
 $(foreach board,$(BOARDS),$(eval $(call generate_sdk_targets,$(board))))
