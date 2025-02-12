@@ -45,11 +45,6 @@ build-$(1): check-deps
 	@mkdir -p $(LOG_DIR)/$(1)
 	@mkdir -p $(IMAGE_DIR)/$(1)
 	$(KAS) build $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) 2>&1 | tee $(LOG_DIR)/$(1)/build-$(BUILD_TIME).log
-	@echo "Copying image files for $(1)..."
-	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.wic.bmap" -type f -exec cp --preserve=all {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
-		echo "Error copying files"; \
-		exit 1; \
-	fi
 	@echo "Build completed for $(1) at $$(date)"
 
 shell-$(1): check-deps
@@ -95,7 +90,7 @@ copy-images-$(1): check-deps
 	@mkdir -p $(LOG_DIR)/$(1)
 	@mkdir -p $(IMAGE_DIR)/$(1)
 	@echo "Copying image files for $(1)..."
-	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.wic.bmap" -type f -exec cp --preserve=all {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
+	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.*.wic.bmap" -type f -exec cp --preserve=all {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
 		echo "Error copying files"; \
 		exit 1; \
 	fi
@@ -106,13 +101,22 @@ endef
 
 
 $(foreach board,$(BOARDS),$(eval $(call generate_board_targets,$(board))))
-
 $(foreach board,$(BOARDS),$(eval $(call generate_sdk_targets,$(board))))
+$(foreach board,$(BOARDS),$(eval $(call copy_sdk_targets,$(board))))
+$(foreach board,$(BOARDS),$(eval $(call copy_images_targets,$(board))))
 
 # Main targets
 .DEFAULT_GOAL := help
 
 build-all: check-deps $(addprefix build-,$(BOARDS))
+	@echo "=== All board builds completed at $$(date) ==="
+
+copy-all-images: check-deps $(addprefix copy-images-,$(BOARDS))
+	@echo "=== All images copied at $$(date) ==="
+
+copy-all-sdks: check-deps $(addprefix copy-sdk-,$(BOARDS))
+	@echo "=== All SDKs copied at $$(date) ==="
+
 sdk-all: check-deps
 	@echo "=== Starting SDK generation for all boards at $(BUILD_TIME) ==="
 	@mkdir -p $(SDK_DIR)
@@ -146,8 +150,9 @@ debug:
 	@echo "Build Time: $(BUILD_TIME)"
 
 # Update .PHONY
-.PHONY: build-all clean check-deps debug info \
-	$(foreach board,$(BOARDS),build-$(board) shell-$(board) sdk-$(board) sdk-shell-$(board))
+.PHONY: build-all clean check-deps debug info copy-all-images copy-all-sdks \
+	$(foreach board,$(BOARDS),build-$(board) shell-$(board) sdk-$(board) sdk-shell-$(board) \
+	copy-images-$(board) copy-sdk-$(board))
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════════╗"
@@ -161,6 +166,10 @@ help:
 	@echo "  build-<board>     - Build specific board image"
 	@echo "  shell-<board>     - Open shell for specific board"
 	@echo "  build-all        - Build all board images"
+	@echo "  copy-images-<board> - Copy images for specific board"
+	@echo "  copy-sdk-<board>   - Copy SDK for specific board"
+	@echo "  copy-all-images   - Copy all board images"
+	@echo "  copy-all-sdks     - Copy all board SDKs"
 	@echo "  clean            - Remove build artifacts and logs"
 	@echo "  debug            - Show build system information"
 	@echo "  info             - Display detailed system information"
