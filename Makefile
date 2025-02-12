@@ -24,6 +24,7 @@ SDK_OPTS ?=
 IMAGE_DIR = images
 IMAGE_OPTS ?=
 IMAGE_BUILD_DIR = build/tmp/deploy/images
+SDK_BUILD_DIR = build/tmp/deploy/sdk
 
 
 # Check if kas is installed
@@ -77,7 +78,7 @@ copy-sdk-$(1): check-deps
 	@mkdir -p $(LOG_DIR)/$(1)
 	@mkdir -p $(SDK_DIR)/$(1)
 	@echo "Copying SDK files for $(1)..."
-	@if ! find -L "$(SDK_DIR)/$(1)" -name "*.tar.xz" -type f -exec cp --preserve=all {} "$(SDK_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
+	@if ! find -L "$(SDK_BUILD_DIR)/" -name "*$(1)-toolchain*.sh" -type f -exec cp --preserve=all {} "$(SDK_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
 		echo "Error copying files"; \
 		exit 1; \
 	fi
@@ -90,7 +91,7 @@ copy-images-$(1): check-deps
 	@mkdir -p $(LOG_DIR)/$(1)
 	@mkdir -p $(IMAGE_DIR)/$(1)
 	@echo "Copying image files for $(1)..."
-	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.*.wic.bmap" -type f -exec cp --preserve=all {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
+	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.wic.bz2" -type f -exec cp  {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
 		echo "Error copying files"; \
 		exit 1; \
 	fi
