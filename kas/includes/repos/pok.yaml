@@ -1,0 +1,8 @@
+header:
+  version: 8
+
+repos:
+  poky:
+    url: https://git.yoctoproject.org/poky
+    path: layers/poky
+    branch: master

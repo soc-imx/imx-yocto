@@ -1,0 +1,19 @@
+header:
+  version: 8
+
+local_conf_header:
+  standard: |
+    CONF_VERSION = "2"
+    PACKAGE_CLASSES = "package_rpm"
+    SDKMACHINE = "x86_64"
+    USER_CLASSES = "buildstats"
+    PATCHRESOLVE = "noop"
+
+    # SDK configurations
+    EXTRA_IMAGE_FEATURES += "tools-sdk dev-pkgs"
+    TOOLCHAIN_HOST_TASK:append = " nativesdk-cmake nativesdk-python3-modules"
+    TOOLCHAIN_TARGET_TASK:append = " kernel-devsrc"
+
+    # Move download and state cache directories outside build
+    DL_DIR = "${TOPDIR}/../downloads"
+    SSTATE_DIR = "${TOPDIR}/../sstate-cache"
