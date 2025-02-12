@@ -5,3 +5,5 @@ typescript
 images/
 logs/
 sdk/
+docker/
+sdk-docker/sdk.sh

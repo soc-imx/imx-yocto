@@ -26,6 +26,12 @@ IMAGE_OPTS ?=
 IMAGE_BUILD_DIR = build/tmp/deploy/images
 SDK_BUILD_DIR = build/tmp/deploy/sdk
 
+# Add new directories and tools
+DOCKER_DIR = sdk-docker
+VERIFY_DIR = verify
+EXTRACT_DIR = extract
+SHA256SUM = sha256sum
+BZCAT = bzcat
 
 # Check if kas is installed
 ifeq ($(shell which $(KAS) 2>/dev/null),)
@@ -53,12 +59,11 @@ shell-$(1): check-deps
 	$(KAS) shell $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS)
 endef
 
-
 # Add after board variants definition
 # Generate SDK targets dynamically with logging
 
 define generate_sdk_targets
-sdk-$(1): check-deps
+sdk-$(1): check-deps build-$(1)
 	@echo "Generating SDK for $(1) at $$(date)"
 	@mkdir -p $(LOG_DIR)/$(1) $(SDK_DIR)/$(1)
 	$(KAS) build $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) -c populate_sdk  2>&1 | tee $(LOG_DIR)/$(1)/sdk-$(BUILD_TIME).log
@@ -68,9 +73,6 @@ sdk-shell-$(1): check-deps
 	@echo "Opening SDK shell for $(1)"
 	$(KAS) shell $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) -c populate_sdk 
 endef
-
-
-
 
 define copy_sdk_targets
 copy-sdk-$(1): check-deps
@@ -98,19 +100,46 @@ copy-images-$(1): check-deps
 	@echo "Image copy completed for $(1) at $$(date)"
 endef
 
-define build_docker_images
-docker-images-$(1): check-deps
-	@echo "Building Docker images at $$(date)"
-	@mkdir -p $(LOG_DIR)/docker
-	@echo "Building Docker images for all boards at $$(date)"
-	cp sdk/${1}/*-toolchain*.sh sdk-docker/sdk.sh 
-endef 
 
+
+# Add new target definitions
+define generate_verify_targets
+verify-$(1): copy-images-$(1)
+	@echo "Verifying images for $(1) at $$(date)"
+	@mkdir -p $(VERIFY_DIR)/$(1)
+	@cd $(IMAGE_DIR)/$(1) && \
+	for img in *.wic.bz2; do \
+		$(SHA256SUM) $$img > $(VERIFY_DIR)/$(1)/$$img.sha256; \
+	done
+	@echo "Verification completed for $(1)"
+endef
+
+define generate_extract_targets
+extract-$(1): verify-$(1)
+	@echo "Extracting images for $(1) at $$(date)"
+	@mkdir -p $(EXTRACT_DIR)/$(1)
+	@cd $(IMAGE_DIR)/$(1) && \
+	for img in *.wic.bz2; do \
+		echo "Extracting $$img..."; \
+		$(BZCAT) $$img > $(EXTRACT_DIR)/$(1)/$${img%.bz2} || exit 1; \
+	done
+	@echo "Extraction completed for $(1)"
+endef
+
+define generate_docker_targets
+docker-$(1):  sdk-$(1)
+	@echo "Building Docker image for $(1) at $$(date)"
+	@cp $(SDK_DIR)/$(1)/*-toolchain*.sh $(DOCKER_DIR)/sdk.sh
+	@docker build -t $(1)-app-builder $(DOCKER_DIR)
+endef
 
 $(foreach board,$(BOARDS),$(eval $(call generate_board_targets,$(board))))
 $(foreach board,$(BOARDS),$(eval $(call generate_sdk_targets,$(board))))
 $(foreach board,$(BOARDS),$(eval $(call copy_sdk_targets,$(board))))
 $(foreach board,$(BOARDS),$(eval $(call copy_images_targets,$(board))))
+$(foreach board,$(BOARDS),$(eval $(call generate_verify_targets,$(board))))
+$(foreach board,$(BOARDS),$(eval $(call generate_extract_targets,$(board))))
+$(foreach board,$(BOARDS),$(eval $(call generate_docker_targets,$(board))))
 
 # Main targets
 .DEFAULT_GOAL := help
@@ -137,11 +166,23 @@ sdk-all: check-deps
 	done
 	@echo "=== SDK generation completed for all boards at $$(date) ==="
 
+verify-all: $(addprefix verify-,$(BOARDS))
+	@echo "=== All image verifications completed ==="
+
+extract-all: $(addprefix extract-,$(BOARDS))
+	@echo "=== All image extractions completed ==="
+
+docker-all: $(addprefix docker-,$(BOARDS))
+	@echo "=== All Docker images built ==="
+
 clean:
 	rm -rf build tmp
 	rm -rf $(LOG_DIR)
-	rm -rf $(LOG_DIR)
 	rm -rf $(SDK_DIR)
+	rm -rf $(VERIFY_DIR)
+	rm -rf $(EXTRACT_DIR)
+	rm -rf $(DOCKER_DIR)
+	rm -rf $(IMAGE_DIR)
 
 check-deps:
 	@echo "Checking dependencies..."
@@ -156,19 +197,16 @@ debug:
 	@echo "Make Flags: $(MAKEFLAGS)"
 	@echo "Build Time: $(BUILD_TIME)"
 
-
-
-
-
 # Update .PHONY
 .PHONY: build-all clean check-deps debug info copy-all-images copy-all-sdks \
+	verify-all extract-all docker-all \
 	$(foreach board,$(BOARDS),build-$(board) shell-$(board) sdk-$(board) sdk-shell-$(board) \
-	copy-images-$(board) copy-sdk-$(board))
+	copy-images-$(board) copy-sdk-$(board) verify-$(board) extract-$(board) docker-$(board))
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════════╗"
 	@echo "║                 Raspberry Pi KAS Build System                   ║"
-	@echo "║                      Version: 1.0.0                            ║"
+	@echo "║                      Version: 1.0.1                            ║"
 	@echo "╚════════════════════════════════════════════════════════════════╝"
 	@echo
 	@echo "Usage: make [target] [KAS_OPTS='<options>']"
@@ -190,6 +228,18 @@ help:
 	@echo "  sdk-shell-<board> - Open SDK shell for specific board"
 	@echo "  sdk-all         - Generate SDKs for all boards"
 	@echo
+	@echo "Docker targets:"
+	@echo "  docker-<board>    - Build Docker image with SDK for specific board"
+	@echo "  docker-all       - Build Docker images for all boards"
+	@echo
+	@echo "Verification targets:"
+	@echo "  verify-<board>   - Generate checksums for specific board images"
+	@echo "  verify-all      - Generate checksums for all board images"
+	@echo
+	@echo "Extraction targets:"
+	@echo "  extract-<board>  - Extract compressed images for specific board"
+	@echo "  extract-all     - Extract compressed images for all boards"
+	@echo
 	@echo "Available boards:"
 	@for board in $(BOARDS); do \
 		printf "  %-15s%s\n" "$$board" "- Build for $$board"; \
@@ -205,8 +255,6 @@ help:
 	@echo "  make sdk-raspberrypi4               # Generate RPi 4 SDK"
 	@echo "  make info                           # Show system information"
 	@echo "  make build-all                      # Build all images"
-
-
 
 info:
 	@echo "=== System Information ==="
