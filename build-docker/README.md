@@ -1,134 +1,102 @@
-# 🚀 Yocto Docker Builder - raspberry pi
+# Raspberry Pi KAS Docker Build System
 
-Welcome to the **Yocto Docker Builder**, a streamlined, containerized environment for building Yocto projects using Docker. This project provides a **lightning-fast, reproducible, and isolated** setup, ensuring a **hassle-free** experience for Yocto builds. Say goodbye to dependency hell and inconsistent environments! 🚀🔥
+A streamlined Docker-based build system for Kubernetes at Scale (KAS) on Raspberry Pi.
 
-## 🏗️ Features
+## 📋 Features
 
-- **Fully containerized build environment** 🐳
-- **Minimal host dependencies** (Just Docker & Docker Compose!)
-- **Reproducible builds** across machines and environments
-- **Automatic volume management** for persistent storage
-- **Preconfigured for Yocto builds** (but flexible for other needs)
-- **Multi-architecture support** (x86_64, ARM, etc.)
-- **Optimized caching** to reduce build times
-
-## 📦 Prerequisites
-
-Ensure you have the following installed on your system:
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+- Automated Docker build environment
+- Cross-platform compatibility
+- Pre-configured Raspberry Pi toolchain
+- Optimized for KAS (Kubernetes at Scale)
 
 ## 🚀 Quick Start
 
-1. Clone this repository:
+### Prerequisites
 
-   ```bash
-   git clone git@github.com:soc-pi/docker-pi.git
-   cd docker-pi
-   ```
+- Docker installed
+- Git
+- 20GB free disk space
+- Internet connection
 
-2. Build the Docker image:
-
-   ```bash
-   docker-compose build
-   ```
-
-3. Run the container:
-
-   ```bash
-   docker-compose up -d
-   ```
-
-4. Enter the build environment:
-
-   ```bash
-   docker exec -it yocto-builder bash
-   ```
-
-5. Start your Yocto build inside the container:
-   ```bash
-   source /build/env-setup.sh && bitbake <your-target>
-   ```
-
-## 🛠️ Configuration
-
-### Dockerfile
-
-- **Based on Ubuntu/Debian** for maximum compatibility
-- **Preinstalled build dependencies** to avoid long setup times
-- **User permissions handled** to avoid root access issues
-
-### `docker-compose.yml`
-
-- **Mounts local directories** for persistent data storage
-- **Customizable environment variables** for project-specific needs
-
-Modify `docker-compose.override.yml` to tweak the setup according to your needs.
-
-## 📂 Folder Structure
-
-```
-.
-├── Dockerfile             # Defines the build environment
-├── docker-compose.yml     # Defines the service
-├── volumes/               # Persistent storage for builds
-├── scripts/               # Custom helper scripts
-└── README.md              # You are here 🚀
-```
-
-## 🚀 Advanced Usage
-
-### Clean up old containers
+### Installation
 
 ```bash
-docker-compose down --volumes --remove-orphans
+# Clone the repository
+git clone https://github.com/yourusername/raspberry-pi-kas.git
+
+# Navigate to build directory
+cd raspberry-pi-kas/build-docker
+
+# Build the Docker image
+docker build -t kas-builder .
 ```
 
-### Rebuild the environment
+## 🔧 Usage
+
+### Basic Build
 
 ```bash
-docker-compose build --no-cache
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  kas-builder build kas-project.yml
 ```
 
-### Stop and remove the container
+### Development Mode
 
 ```bash
-docker-compose down
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  --name kas-dev \
+  kas-builder bash
 ```
 
-## 🔄 Updating Docker Compose
+## 📦 Build Configuration
 
-Remove the current Docker Compose:
+The system supports various build configurations:
 
-```
-sudo rm /usr/local/bin/docker-compose
-```
+- Debug builds (`-v DEBUG=1`)
+- Release builds (default)
+- Custom configurations via environment variables
 
-Install the latest version of Docker Compose:
+## 🛠 Customization
 
-```
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-```
+Modify `Dockerfile` or `kas-project.yml` for:
 
-Verify the installation:
+- Custom package selection
+- Build optimizations
+- Target architecture settings
 
-```
-docker-compose --version
-```
+## 🐛 Troubleshooting
 
-## 🔥 Why Use This?
+Common issues and solutions:
 
-- **No more broken dependencies!**
-- **Consistent, repeatable builds across teams.**
-- **Easy integration with CI/CD pipelines.**
-- **Lightweight and efficient compared to VM-based setups.**
+1. **Build fails with memory error**
 
-## 🤝 Contributing
+   - Increase Docker memory allocation
+   - Clear Docker cache
 
-PRs are welcome! Open an issue if you find a bug or have a feature request.
+2. **Network connectivity issues**
+   - Check proxy settings
+   - Verify network permissions
 
-## 📜 License
+## 📝 Contributing
 
-MIT - Go wild! 🚀
+1. Fork the repository
+2. Create your feature branch
+3. Commit changes
+4. Push to the branch
+5. Create Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👥 Maintainers
+
+- Your Name (@githubhandle)
+
+## 🙏 Acknowledgments
+
+- Raspberry Pi Foundation
+- KAS Project Contributors
+- Docker Community
