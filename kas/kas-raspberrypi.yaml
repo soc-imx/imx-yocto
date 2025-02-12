@@ -33,6 +33,15 @@ repos:
       meta-perl:
 
 
+  meta-ros:
+    url: https://github.com/ros/meta-ros.git
+    path: layers/meta-ros
+    branch: master
+    layers:
+      meta-ros-common:
+      meta-ros2:
+
+
   meta-qt5:
     url: https://github.com/meta-qt5/meta-qt5/
     path: layers/meta-qt5
