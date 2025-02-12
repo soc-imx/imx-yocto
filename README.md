@@ -55,8 +55,8 @@ A comprehensive build system for generating custom Raspberry Pi images using the
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/raspberry-pi-kas.git
-cd raspberry-pi-kas
+git clone https://github.com/yourusername/raspberry-pi-yocto.git
+cd raspberry-pi-yocto
 
 # Build for Raspberry Pi 4
 make build-raspberrypi4
@@ -114,7 +114,7 @@ make sdk-shell-raspberrypi4
 ## 📁 Directory Structure
 
 ```
-raspberry-pi-kas/
+raspberry-pi-yocto/
 ├── Makefile          # Main build system
 ├── kas/              # KAS configuration files
 ├── logs/             # Build logs
