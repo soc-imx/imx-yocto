@@ -98,7 +98,13 @@ copy-images-$(1): check-deps
 	@echo "Image copy completed for $(1) at $$(date)"
 endef
 
-
+define build_docker_images
+docker-images-$(1): check-deps
+	@echo "Building Docker images at $$(date)"
+	@mkdir -p $(LOG_DIR)/docker
+	@echo "Building Docker images for all boards at $$(date)"
+	cp sdk/${1}/*-toolchain*.sh sdk-docker/sdk.sh 
+endef 
 
 
 $(foreach board,$(BOARDS),$(eval $(call generate_board_targets,$(board))))
@@ -149,6 +155,10 @@ debug:
 	@echo "KAS Directory: $(KAS_DIR)"
 	@echo "Make Flags: $(MAKEFLAGS)"
 	@echo "Build Time: $(BUILD_TIME)"
+
+
+
+
 
 # Update .PHONY
 .PHONY: build-all clean check-deps debug info copy-all-images copy-all-sdks \
