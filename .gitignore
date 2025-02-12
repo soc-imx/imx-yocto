@@ -2,4 +2,6 @@ build/
 layers/
 .kas_shell_history
 typescript
-logs/*
+images/
+logs/
+sdk/

@@ -45,7 +45,11 @@ build-$(1): check-deps
 	@mkdir -p $(LOG_DIR)/$(1)
 	@mkdir -p $(IMAGE_DIR)/$(1)
 	$(KAS) build $(KAS_DIR)/kas-$(1).yaml $(KAS_OPTS) 2>&1 | tee $(LOG_DIR)/$(1)/build-$(BUILD_TIME).log
-	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.raspberrypi.rootfs.wic.bmap" -exec cp -av --no-preserve=links {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then echo "Error copying files"; exit 1; fi
+	@echo "Copying image files for $(1)..."
+	@if ! find -L "$(IMAGE_BUILD_DIR)/$(1)" -name "*.rootfs.wic.bmap" -type f -exec cp --preserve=all {} "$(IMAGE_DIR)/$(1)/" \; 2>&1 | tee "$(LOG_DIR)/$(1)/copy-$(BUILD_TIME).log"; then \
+		echo "Error copying files"; \
+		exit 1; \
+	fi
 	@echo "Build completed for $(1) at $$(date)"
 
 shell-$(1): check-deps
