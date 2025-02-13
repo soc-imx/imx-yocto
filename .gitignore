@@ -12,3 +12,4 @@ sstate-cache/
 *.log
 *.tmp
 *.dockerignore
+sdk.sh

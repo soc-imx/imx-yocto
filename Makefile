@@ -129,6 +129,7 @@ endef
 define generate_docker_targets
 docker-$(1): copy-sdk-$(1) 
 	@echo "Building Docker image for $(1) at $$(date)"
+	@mkdir -p $(DOCKER_DIR)
 	@cp $(SDK_DIR)/$(1)/*-toolchain*.sh $(DOCKER_DIR)/sdk.sh
 	@docker build -t $(1)-app-builder $(DOCKER_DIR)
 endef
@@ -181,7 +182,6 @@ clean:
 	rm -rf $(SDK_DIR)
 	rm -rf $(VERIFY_DIR)
 	rm -rf $(EXTRACT_DIR)
-	rm -rf $(DOCKER_DIR)
 	rm -rf $(IMAGE_DIR)
 
 check-deps:

@@ -4,7 +4,7 @@ header:
 machine: raspberrypi
 distro: poky
 target:
-- core-image-minimal
+- core-image-full-cmdline
 
 repos:
   meta-raspberry:
@@ -40,6 +40,7 @@ repos:
     layers:
       meta-ros-common:
       meta-ros2:
+      meta-ros2-humble:
 
 
   meta-qt5:
@@ -58,8 +59,8 @@ local_conf_header:
 
     # SDK configurations
     EXTRA_IMAGE_FEATURES += "tools-sdk dev-pkgs"
-    TOOLCHAIN_HOST_TASK:append = " nativesdk-cmake nativesdk-python3-modules"
-    TOOLCHAIN_TARGET_TASK:append = " kernel-devsrc"
+    TOOLCHAIN_HOST_TASK:append = " nativesdk-cmake nativesdk-python3-modules nativesdk-python3-setuptools"
+    TOOLCHAIN_TARGET_TASK:append = " kernel-devsrc python3-dev python3-setuptools"
 
     # Move download and state cache directories outside build
     DL_DIR = "${TOPDIR}/../downloads"
@@ -81,3 +82,7 @@ local_conf_header:
     # Uncomment next line to allow the license
     # See: linux-firmware-rpidistro in docs/ipcompliance.md
     LICENSE_FLAGS_ACCEPTED = "synaptics-killswitch"
+
+  package: |
+    IMAGE_INSTALL:append = " grpc cyclonedds python3-dev python3-pip "
+    TOOLCHAIN_TARGET_TASK:append = " "
